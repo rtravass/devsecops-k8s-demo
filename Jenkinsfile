@@ -27,6 +27,14 @@ pipeline {
                     sh 'docker push rtravass/numeric-app-new:""$GIT_COMMIT""'
                 }        
             }
-        }     
+        }   
+       stage('Kubernetes Deployment - Dev') {
+            steps {
+                withKubeConfig([credentialsId: 'kubeconfig']) {
+                    sh "sed -i 's#replace#rtravass/numeric-app-new:${GIT_COMMIT}#g' k8s_deployment_service.yaml"
+                    sh "kubectl apply -f k8s_deployment_service.yaml"
+              }        
+            }
+        }       
     }
 }
