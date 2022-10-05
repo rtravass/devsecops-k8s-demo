@@ -18,6 +18,13 @@ pipeline {
                 jacoco execPattern: 'target/jacoco.exec' //to review the results of the unit tests. plugin added to pom.xml
               }
             }
+        }
+      stage('Docker Build and Push') {
+            steps {
+              sh 'printenv'
+              sh 'docker build -t rtravass/numeric-app-new:""$GIT_COMMIT"" .'
+              sh 'docker push rtravass/numeric-app-new:""$GIT_COMMIT""'
+            }
         }     
     }
 }
