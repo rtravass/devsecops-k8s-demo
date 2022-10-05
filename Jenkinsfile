@@ -15,7 +15,7 @@ pipeline {
             post{
               always{
                 junit 'target/surefire-reports/*.xml'
-                jacoco execPattern: 'target/jacoco.exec'
+                jacoco execPattern: 'target/jacoco.exec' //to review the results of the unit tests. plugin added to pom.xml
               }
             }
         }     
