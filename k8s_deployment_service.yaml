@@ -32,4 +32,4 @@ spec:
     targetPort: 8080
   selector:
     app: devsecops
-  type: NodePort   #someport
+  type: NodePort
