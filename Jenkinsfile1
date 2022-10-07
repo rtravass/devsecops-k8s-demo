@@ -12,22 +12,22 @@ pipeline {
             steps {
               sh "mvn test"
             }
-            // post{
-            //   always{
-            //     junit 'target/surefire-reports/*.xml'
-            //     jacoco execPattern: 'target/jacoco.exec' //to review the results of the unit tests. plugin added to pom.xml
-            //   }
-            // }
+            post{
+              always{
+                junit 'target/surefire-reports/*.xml'
+                jacoco execPattern: 'target/jacoco.exec' //to review the results of the unit tests. plugin added to pom.xml
+              }
+            }
         }
       stage('Mutation Tests - PIT') {
             steps {
               sh "mvn org.pitest:pitest-maven:mutationCoverage"
             }
-            // post{
-            //   always{
-            //     pitmutation mutationStatsFile: '**/target/pit-reports/**/mutations.xml' 
-            //   }
-            // }
+            post{
+              always{
+                pitmutation mutationStatsFile: '**/target/pit-reports/**/mutations.xml' 
+              }
+            }
       }
 
       stage('SonarQube - SAST') {
@@ -48,12 +48,12 @@ pipeline {
             steps {
                     sh 'mvn dependency-check:check'
             }
-            // post{
-            //   always{
-            //     //publish the html report
-            //     dependencyCheckPublisher pattern: 'target/dependency-check-report.xml'
-            //   }
-            // }        
+            post{
+              always{
+                //publish the html report
+                dependencyCheckPublisher pattern: 'target/dependency-check-report.xml'
+              }
+            }        
       } 
 
       stage('Docker Build and Push') {
@@ -73,13 +73,5 @@ pipeline {
               }        
             }
         }       
-    }
-    post { 
-        always { 
-            junit 'target/surefire-reports/*.xml'
-            jacoco execPattern: 'target/jacoco.exec' //to review the results of the unit tests. plugin added to pom.xml
-            pitmutation mutationStatsFile: '**/target/pit-reports/**/mutations.xml'
-            dependencyCheckPublisher pattern: 'target/dependency-check-report.xml' //publish the html report
-        }
     }
 }
