@@ -75,8 +75,8 @@ pipeline {
                     sh 'printenv'
                     // sh 'docker build -t rtravass/numeric-app-new:""$GIT_COMMIT"" .'
                     // sh 'docker push rtravass/numeric-app-new:""$GIT_COMMIT""'
-                    sh 'docker build -t rtravass/numeric-app-new:""$SUDO_GID"" .'
-                    sh 'docker push rtravass/numeric-app-new:""$SUDO_GID""'
+                    sh 'docker build -t rtravass/numeric-app-new:latest .'
+                    sh 'docker push rtravass/numeric-app-new:latest'
                 }        
             }
         }   
