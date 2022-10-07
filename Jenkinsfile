@@ -73,10 +73,10 @@ pipeline {
             steps {
                 withDockerRegistry([credentialsId: 'docker-hub', url: '']) {
                     sh 'printenv'
-                    // sh 'docker build -t rtravass/numeric-app-new:""$GIT_COMMIT"" .'
-                    // sh 'docker push rtravass/numeric-app-new:""$GIT_COMMIT""'
-                    sh 'docker build -t rtravass/numeric-app-new:latest .'
-                    sh 'docker push rtravass/numeric-app-new:latest'
+                    sh 'sudo docker build -t rtravass/numeric-app-new:""$GIT_COMMIT"" .'
+                    sh 'docker push rtravass/numeric-app-new:""$GIT_COMMIT""'
+                    // sh 'sudo docker build -t rtravass/numeric-app-new:latest .'
+                    // sh 'docker push rtravass/numeric-app-new:latest'
                 }        
             }
         }   
