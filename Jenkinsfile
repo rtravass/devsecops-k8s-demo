@@ -44,17 +44,30 @@ pipeline {
               }
            }
       }   
-      stage('Vulnerability Scan') {
-            steps {
-                    sh 'mvn dependency-check:check'
-            }
-            // post{
-            //   always{
-            //     //publish the html report
-            //     dependencyCheckPublisher pattern: 'target/dependency-check-report.xml'
-            //   }
-            // }        
-      } 
+      // stage('Vulnerability Scan') {    added to the scan step mentioned below
+      //       steps {
+      //               sh 'mvn dependency-check:check'
+      //       }
+      //       // post{
+      //       //   always{
+      //       //     //publish the html report
+      //       //     dependencyCheckPublisher pattern: 'target/dependency-check-report.xml'
+      //       //   }
+      //       // }        
+      // } 
+
+      stage('Vulnerability Scan - Docker') {
+          steps {
+              parallel(
+                "Dependency Scan": {
+                    sh "mvn dependency-check:check"
+                },
+                "Trivy Scan":{
+                    sh "bash trivy-docker-image-scan.sh"
+                }
+              )
+         }
+      }
 
       stage('Docker Build and Push') {
             steps {
