@@ -1,6 +1,16 @@
 pipeline {
   agent any
 
+  environment {
+    deploymentName = "devsecops"
+    containerName = "devsecops-container"
+    serviceName = "devsecops-svc"
+    imageName = "rtravass/numeric-app:${GIT_COMMIT}"
+    //applicationURL="http://devsecops-demo.eastus.cloudapp.azure.com"
+    applicationURL="devsecops.centralindia.cloudapp.azure.com"
+    applicationURI="/increment/99"
+  }
+
   stages {
       stage('Build Artifact') {
             steps {
@@ -90,14 +100,31 @@ pipeline {
             }
       }
 
-      stage('Kubernetes Deployment - Dev') {
-            steps {
+      // stage('Kubernetes Deployment - Dev') {      //updated stage to verify k8s deployment status
+      //       steps {
+      //           withKubeConfig([credentialsId: 'kubeconfig']) {
+      //               sh "sed -i 's#replace#rtravass/numeric-app-new:${GIT_COMMIT}#g' k8s_deployment_service.yaml"
+      //               sh "kubectl apply -f k8s_deployment_service.yaml"
+      //         }        
+      //       }
+      //   }       
+
+      stage('K8S Deployment - DEV') {
+          steps {
+            parallel(
+              "Deployment": {
                 withKubeConfig([credentialsId: 'kubeconfig']) {
-                    sh "sed -i 's#replace#rtravass/numeric-app-new:${GIT_COMMIT}#g' k8s_deployment_service.yaml"
-                    sh "kubectl apply -f k8s_deployment_service.yaml"
-              }        
-            }
-        }       
+                  sh "bash k8s-deployment.sh"
+                }
+              },
+              "Rollout Status": {
+                withKubeConfig([credentialsId: 'kubeconfig']) {
+                  sh "bash k8s-deployment-rollout-status.sh"
+                }
+              }
+            )
+          }
+      }
     }
     post { 
         always { 
