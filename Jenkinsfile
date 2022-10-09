@@ -8,7 +8,8 @@ pipeline {
     imageName = "rtravass/numeric-app-new:${GIT_COMMIT}"
     //applicationURL="http://devsecops-demo.eastus.cloudapp.azure.com"
     applicationURL="devsecops.centralindia.cloudapp.azure.com"
-    applicationURI="/increment/99"
+    //applicationURI="/increment/99"
+    applicationURI="/compare/99"
   }
 
   stages {
@@ -139,6 +140,23 @@ pipeline {
                 }
               }
             )
+          }
+      }
+
+      stage('Integration Tests - DEV') {
+          steps {
+            script {
+              try {
+                withKubeConfig([credentialsId: 'kubeconfig']) {
+                  sh "bash integration-test.sh"
+                }
+              } catch (e) {
+                withKubeConfig([credentialsId: 'kubeconfig']) {
+                  sh "kubectl -n default rollout undo deploy ${deploymentName}"
+                }
+                throw e
+              }
+            }
           }
       }
     }
