@@ -7,7 +7,7 @@ pipeline {
     serviceName = "devsecops-svc"
     imageName = "rtravass/numeric-app-new:${GIT_COMMIT}"
     //applicationURL="http://devsecops-demo.eastus.cloudapp.azure.com"
-    applicationURL="devsecops.centralindia.cloudapp.azure.com"
+    applicationURL="http://devsecops.centralindia.cloudapp.azure.com"
     applicationURI="/increment/99"
   }
 
